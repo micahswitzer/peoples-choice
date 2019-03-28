@@ -8,7 +8,7 @@ create table mzpc_section(
 create table mzpc_project(
 	id int auto_increment,
 	name varchar(25),
-	status varchar(25),
+	status_open boolean,
 	section_id int not null,
 	primary key (id),
 	foreign key (section_id) references mzpc_section(id)
@@ -39,6 +39,8 @@ create table mzpc_user(
 	id int auto_increment,
 	name varchar(40),
 	pass varchar(25),
+	student boolean,
+	admin boolean,
 	primary key (id)
 );
 
