@@ -1,50 +1,61 @@
---section table
+--section
 create table mzpc_section(
 	id int not null auto_increment,
 	primary key (id)
 );
 
---project table
+--project
 create table mzpc_project(
-	id int not null auto_increment,
-	name varchar(20),
-	status varchar(20),
+	id int auto_increment,
+	name varchar(25),
+	status varchar(25),
 	section_id int not null,
-	team_id int not null,
 	primary key (id),
-	foreign key (section_id) references mzpc_section(id),
-	foreign key (team_id) references mzpc_team(id)
+	foreign key (section_id) references mzpc_section(id)
 );
 
---team table
+--team
 create table mzpc_team(
-	id int not null auto_increment,
-	name varchar(20),
+	id int auto_increment,
+	name varchar(25),
 	project_id int not null,
-	score int,
 	primary key (id),
 	foreign key (project_id) references mzpc_project(id)
 );
 
---write_in table
+--write_in
 create table mzpc_write_in(
-	id int not null auto_increment,
+	id int auto_increment,
 	message varchar(150),
-	member int not null,
+	user_id int not null,
+	team_id int not null,
 	primary key (id),
-	foreign key (member) references mzpc_user(id)
+	foreign key (user_id) references mzpc_user(id),
+	foreign key (team_id) references mzpc_team(id)
 );
 
---user table
+--user
 create table mzpc_user(
-	id int not null auto_increment,
-	name varchar(50),
-	pass varchar(20),
+	id int auto_increment,
+	name varchar(40),
+	pass varchar(25),
 	primary key (id)
 );
 
---user_team table
-create table mzpc_user_team(
-	member int not null,
-	foreign key (member) references mzpc_user(id)
+--score
+create table mzpc_score(
+	id int auto_increment,
+	user_id int not null,
+	team_id int not null,
+	primary key (id),
+	foreign key (user_id) references mzpc_user(id),
+	foreign key (team_id) references mzpc_team(id)
+);
+
+--member
+create table mzpc_member(
+	user_id int not null,
+	team_id int not null,
+	foreign key (user_id) references mzpc_user(id),
+	foreign key (team_id) references mzpc_team(id)
 );
