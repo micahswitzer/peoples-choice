@@ -1,12 +1,9 @@
 export interface Project {
     id: number;
     name: string;
-    isOpen: boolean;
-    medals: {
-        gold: User;
-        silver: User;
-        bronze: User;
-    }
+    status_open: boolean;
+    section_id: number;
+    medals?: [];
 }
 
 export interface User {

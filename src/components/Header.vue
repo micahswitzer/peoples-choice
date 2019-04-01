@@ -2,7 +2,7 @@
     <div class="uk-navbar-container" uk-navbar="mode: click">
         <div class="uk-navbar-left">
             <div class="uk-navbar-item uk-logo">
-                People's Choice Awards {{ title }}
+                People's Choice Awards (aka&nbsp;<a href="https://google.com" target="_blank">Google</a>)
             </div>
         </div>
         <div class="uk-navbar-center">
@@ -46,7 +46,5 @@ export default class Header extends Vue {
 </script>
 
 <style scoped>
-h2::before {
-    content: ' / ';
-}
+
 </style>
