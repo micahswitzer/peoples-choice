@@ -8,7 +8,7 @@ This was created by [Micah Switzer](https://github.com/micahswitzer) and [Zach K
 - [X] Make framework decisions
 - [X] Set up project framework(s)
 - [X] Create DB schema
-    - [ ] Run DDL on james
+    - [X] Run DDL on james
 - [ ] Create backend PHP pages
 - [ ] Create base page
     - [ ] Basic structure
