@@ -49,6 +49,7 @@ create table mzpc_score(
 	id int auto_increment,
 	user_id int not null,
 	team_id int not null,
+	points int not null,
 	primary key (id),
 	foreign key (user_id) references mzpc_user(id),
 	foreign key (team_id) references mzpc_team(id)
