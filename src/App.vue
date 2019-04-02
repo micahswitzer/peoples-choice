@@ -28,12 +28,12 @@ import axios from 'axios';
   },
 })
 export default class App extends Vue {
-  public projects: Array<Project> = [];
+  public projects: Project[] = [];
   private urlRoot: string = 'http://judah.cedarville.edu/~switzer/projects/5/';
 
   public $mount(): any {
-    axios.get<Array<Project>>(this.urlRoot + 'projects.php?section=1')
-      .then(response => this.projects = response.data);
+    axios.get<Project[]>(this.urlRoot + 'projects.php?section=1')
+      .then((response) => this.projects = response.data);
     return super.$mount();
   }
 }
