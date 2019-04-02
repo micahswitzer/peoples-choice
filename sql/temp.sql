@@ -1,12 +1,12 @@
-select t.name, max(s.points) as points
-from mzpc_team as t join mzpc_score as s on t.id = s.team_id,
+select e.Project, e.Team, e.Points
+from
 (
-	select sum(s.points)
-    from mzpc_project as p, mzpc_team as t join mzpc_score as s on t.id = s.team_id
-    where t.project_id = p.id
-    group by t.name
-    
+	select p.id as Project, t.id as Team, sum(s.points) as Points
+	from mzpc_project as p, mzpc_score as s join mzpc_team as t on s.team_id = t.id
+	where t.project_id = p.id
+	group by t.id
 ) as e
-group by t.name
+group by e.Points desc
+limit 3
 
--- it's gross, it's ugly, it's redundant, but boy does it return team names and rank them by max sum of points
+-- simpler (project specifics) top 3 query
