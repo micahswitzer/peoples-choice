@@ -1,3 +1,28 @@
+-- best current per project query we have
+select e.Project, e.Team, e.Points
+from
+(
+	select p.id as Project, t.id as Team, sum(s.points) as Points
+	from mzpc_project as p, mzpc_score as s join mzpc_team as t on s.team_id = t.id
+	where t.project_id = p.id
+	group by t.id
+) as e
+where e.Project = 1 -- editable number [er project number
+group by e.Points desc
+limit 3
+
+
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 select e.Project, e.Team, e.Points
 from
 (
