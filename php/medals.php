@@ -1,34 +1,21 @@
 <?php
+include('./_include.php');
 
-$sql = "SELECT p.id as project_id, t.id as team_id, s.score FROM mzpc_project p
-        JOIN mzpc_team t ON p.id = t.project_id
-        JOIN (SELECT team_id, SUM(points) as score FROM mzpc_score GROUP BY team_id) s ON t.id = s.team_id
-        WHERE t.id IN (SELECT st.id FROM mzpc_score ss
-               JOIN mzpc_team st ON ss.team_id = st.id
-               WHERE st.project_id = p.id
-               GROUP BY st.id
-               ORDER BY SUM(ss.points) DESC
-               LIMIT 3)";
+// catch-all for other request types since we only support GET
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') error('Unknown request type.');
+if (!isset($_GET['section'])) error('No section specified.');
 
-$section_id = $_GET['section'];
+$projects = execute_sql('SELECT id FROM mzpc_project WHERE section_id = ?', [$_GET['section']])->fetchAll(PDO::FETCH_COLUMN, 0);
 
-//session_start();
-
-$dsn = "mysql:host=james;dbname=cs3220_Sp19;charset=utf8mb4";
-$options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-];
-// create the PDO object
-$pdo = new PDO($dsn, "cs3220", "", $options);
-
-// prepare the statements
-$statement = $pdo->prepare($sql);
-$statement->execute([$section_id]);
-$result = $statement->fetchAll();
-
-// send them results back
-header("Access-Control-Allow-Origin: http://localhost:8080");
-header("Content-Type: application/json");
-echo json_encode($result);
+$results = [];
+foreach ($projects as $project_id) {
+    $results[$project_id] = execute_sql(
+        'SELECT s.team_id, SUM(s.points) as score
+        FROM mzpc_score s
+        JOIN mzpc_team t ON s.team_id = t.id
+        WHERE t.project_id = ?
+        GROUP BY s.team_id
+        ORDER BY SUM(s.points) DESC
+        LIMIT 3', [$project_id])->fetchAll();
+}
+json($results);
