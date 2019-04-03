@@ -10,9 +10,26 @@ This was created by [Micah Switzer](https://github.com/micahswitzer) and [Zach K
 - [X] Create DB schema
     - [X] Run DDL on james
 - [ ] Create backend PHP pages
+    - [X] Projects
+        - [ ] Open and close
+        - [ ] Create and delete
+    - [ ] Teams (Create, Read, Update, Delete)
+        - [ ] Add and remove members
+    - [ ] Medals (Top 3 Scoring Teams Per Project)
+    - [ ] Score
+        - [ ] Award medals
+        - [ ] Re-assign
+    - [ ] Users
+        - [ ] Get all
+        - [ ] Create new
+        - [ ] Update self
+        - [ ] Update others (admin)
+        - [ ] Remove
 - [ ] Create base page
     - [ ] Basic structure
     - [ ] Basic CSS
+- [ ] Create login page
+    - [ ] PHP Session Handling
 
 ## Vue Project setup
 ```
