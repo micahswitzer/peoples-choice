@@ -1,6 +1,15 @@
 <?php
 
-$sql = "SELECT id, name, status_open as isOpen FROM mzpc_project WHERE section_id = ?";
+$sql = "SELECT p.id as project_id, t.id as team_id, s.score FROM mzpc_project p
+        JOIN mzpc_team t ON p.id = t.project_id
+        JOIN (SELECT team_id, SUM(points) as score FROM mzpc_score GROUP BY team_id) s ON t.id = s.team_id
+        WHERE t.id IN (SELECT st.id FROM mzpc_score ss
+               JOIN mzpc_team st ON ss.team_id = st.id
+               WHERE st.project_id = p.id
+               GROUP BY st.id
+               ORDER BY SUM(ss.points) DESC
+               LIMIT 3)";
+
 $section_id = $_GET['section'];
 
 //session_start();
