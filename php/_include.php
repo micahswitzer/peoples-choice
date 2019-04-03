@@ -12,6 +12,7 @@ session_start();
 if (false and !isset($_SESSION['user_id'])) unauthorized();
 $user_id = '15';//$_SESSION['user_id'];
 $user_is_admin = true;//$_SESSION['user_is_admin']; // this will come from the DB when a user logs in
+$user_is_student = true;//$_SESSION['user_is_student']; // more testing
 
 // define some real nice helper functions...
 // returns an error message along with a nice HTTP error code
