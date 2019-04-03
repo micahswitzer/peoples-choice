@@ -1,5 +1,5 @@
 <?php
-include('./_include.php'); // this give us some nice features
+include('./_include.php');
 
 // GET
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -7,12 +7,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $result = execute_sql('SELECT id, name FROM mzpc_team WHERE project_id = ?', [$_GET['project']])->fetchAll();
     json($result);
 }
+
+// everything else here is resricted to admin access
+if (!$user_is_admin) unauthorized();
+
 // POST
-else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['name'])) error('Name not specified.');
     if (!isset($_POST['project_id'])) error('Project id not specified.');
     execute_sql('INSERT INTO mzpc_team (name, project_id) VALUES (?, ?)', [$_POST['name'], $_POST['project_id']]);
 }
+
 // PUT
 else if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     parse_str(file_get_contents("php://input"), $put); // get the contents of the PUT request
@@ -20,6 +25,7 @@ else if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     if (!isset($put['name'])) error('Name not specified.');
     execute_sql('UPDATE mzpc_team SET name = ? WHERE id = ?', [$put['name'], $_GET['id']]);
 }
+
 // DELETE
 else if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     if (!isset($_GET['id'])) error('Team id not specified.');

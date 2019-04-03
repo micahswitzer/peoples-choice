@@ -1,13 +1,18 @@
 <?php
-// check if the user is logged in
-session_start();
-// DEV ONLY, FIX FOR PRODUCTION
-if (false and !isset($_SESSION['user_id'])) {
+
+function unauthorized() {
     // get rejected!
     http_response_code(401);
     header('Content-Type: text/plain');
     die('Unauthorized');
 }
+// check if the user is logged in
+session_start();
+// DEV ONLY, FIX FOR PRODUCTION
+if (false and !isset($_SESSION['user_id'])) unauthorized();
+$user_id = '15';//$_SESSION['user_id'];
+$user_is_admin = true;//$_SESSION['user_is_admin']; // this will come from the DB when a user logs in
+
 // define some real nice helper functions...
 // returns an error message along with a nice HTTP error code
 function error($str) {
