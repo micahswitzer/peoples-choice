@@ -1,9 +1,9 @@
 <template>
 <div class="pc-medal">
 	<span uk-icon="icon: star"
-    v-bind:class="{'medal-gold': medal.value == 3, 'medal-silver': medal.value == 2, 'medal-bronze': medal.value == 1}">
+    v-bind:class="{'medal-gold': value == 3, 'medal-silver': value == 2, 'medal-bronze': value == 1}">
   </span>&nbsp;
-  <span>{{ personName }}</span>
+  <span v-html="teamName"></span>
 </div>
 </template>
 
@@ -13,8 +13,8 @@ import { Medal } from '../models/DataModels';
 
 @Component
 export default class MedalItem extends Vue {
-  @Prop() private medal!: Medal;
-  @Prop() private personName!: string;
+  @Prop() private value!: number;
+  @Prop() private teamName!: string;
 }
 </script>
 
