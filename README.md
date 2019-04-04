@@ -9,22 +9,22 @@ This was created by [Micah Switzer](https://github.com/micahswitzer) and [Zach K
 - [X] Set up project framework(s)
 - [X] Create DB schema
     - [X] Run DDL on james
-- [ ] Create backend PHP pages
+- [X] Create backend PHP pages
     - [X] Projects
-        - [ ] Open and close
-        - [ ] Create and delete
-    - [ ] Teams (Create, Read, Update, Delete)
-        - [ ] Add and remove members
-    - [ ] Medals (Top 3 Scoring Teams Per Project)
-    - [ ] Score
-        - [ ] Award medals
-        - [ ] Re-assign
-    - [ ] Users
-        - [ ] Get all
-        - [ ] Create new
-        - [ ] Update self
-        - [ ] Update others (admin)
-        - [ ] Remove
+        - [X] Open and close
+        - [X] Create and delete
+    - [X] Teams (Create, Read, Update, Delete)
+        - [X] Add and remove members
+    - [X] Medals (Top 3 Scoring Teams Per Project)
+    - [X] Score
+        - [X] Award medals
+        - [X] Re-assign
+    - [X] Users
+        - [X] Get all
+        - [X] Create new
+        - [X] Update self
+        - [X] Update others (admin)
+        - [X] Remove
 - [ ] Create base page
     - [ ] Basic structure
     - [ ] Basic CSS
