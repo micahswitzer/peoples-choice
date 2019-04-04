@@ -4,7 +4,11 @@ include('./_include.php');
 // GET
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!isset($_GET['project'])) error('No project specified.');
-    $result = execute_sql('SELECT id, name FROM mzpc_team WHERE project_id = ?', [$_GET['project']])->fetchAll();
+    $result = execute_sql(
+        'SELECT t.id, m.user_id FROM mzpc_team t
+        JOIN mzpc_member m ON t.id = m.team_id
+        WHERE project_id = ?',
+        [$_GET['project']])->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP);
     json($result);
 }
 
