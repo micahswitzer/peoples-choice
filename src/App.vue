@@ -24,6 +24,7 @@
         </div>
       </div>
     </div>
+    <VoteResults/>
   </div>
 </template>
 
@@ -31,6 +32,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Header from './components/Header.vue';
 import ProjectCard from './components/ProjectCard.vue';
+import VoteResults from './components/VoteResults.vue';
 import { Project, User, UrlRoot, MedalList } from './models/DataModels';
 import axios from 'axios';
 
@@ -38,6 +40,7 @@ import axios from 'axios';
   components: {
     Header,
     ProjectCard,
+    VoteResults,
   },
 })
 export default class App extends Vue {

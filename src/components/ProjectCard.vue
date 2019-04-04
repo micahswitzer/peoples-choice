@@ -9,13 +9,23 @@
     </div>
     <div class="uk-card-footer" v-if="projectHasMedals() || project.isOpen == '1'">
       <button class="uk-button uk-button-primary uk-button-small" v-if="project.isOpen == '1'">Vote</button>
-      <button class="uk-button uk-button-default uk-button-small" v-if="projectHasMedals() || project.isOpen == '1'">Results</button>
+      <button class="uk-button uk-button-default uk-button-small"
+        v-if="projectHasMedals() || project.isOpen == '1'"
+        v-on:click="showResultsDialog">
+        Results
+      </button>
     </div>
   </div>
 </div>
 </template>
 
 <script lang="ts">
+declare global {
+  interface Window {
+    UIkit: any;
+  }
+}
+
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Project, TeamList, UrlRoot, MedalList, User } from '../models/DataModels';
 import MedalItem from '../components/MedalItem.vue';
@@ -49,6 +59,9 @@ export default class ProjectCard extends Vue {
     return this.medals &&
       this.medals.hasOwnProperty(this.project.id) &&
       this.medals[this.project.id].length > 0;
+  }
+  private showResultsDialog(event: any): void {
+    window.UIkit.modal('#modal-vote-results').show();
   }
 }
 </script>
