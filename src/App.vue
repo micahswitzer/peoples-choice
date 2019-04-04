@@ -18,7 +18,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Header from './components/Header.vue';
 import ProjectCard from './components/ProjectCard.vue';
-import { Project } from './models/DataModels';
+import { Project, User } from './models/DataModels';
 import axios from 'axios';
 
 @Component({
@@ -29,6 +29,7 @@ import axios from 'axios';
 })
 export default class App extends Vue {
   public projects: Project[] = [];
+  public users: User[] = [];
   private urlRoot: string = 'http://judah.cedarville.edu/~switzer/projects/5/';
 
   public $mount(): any {

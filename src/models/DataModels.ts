@@ -1,14 +1,17 @@
 export interface Project {
     id: number;
     name: string;
-    status_open: boolean;
+    isOpen: boolean;
     section_id: number;
     medals?: [];
 }
 
 export interface User {
     id: number;
-    name: string;
+    first_name: string;
+    last_name: string;
+    is_student: boolean;
+    is_admin: boolean;
 }
 
 export interface Medal {
