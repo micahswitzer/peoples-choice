@@ -11,7 +11,7 @@
       <button class="uk-button uk-button-primary uk-button-small" v-if="project.isOpen == '1'">Vote</button>
       <button class="uk-button uk-button-default uk-button-small"
         v-if="projectHasMedals() || project.isOpen == '1'"
-        v-on:click="$emit('results-clicked', project.id)">
+        v-on:click="$emit('results-clicked', project)">
         Results
       </button>
     </div>

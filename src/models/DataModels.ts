@@ -32,3 +32,10 @@ export interface MedalList {
         score: string;
     }>;
 }
+
+export interface ProjectVotes {
+    [key: string]: Array<{
+        points: string;
+        count: string;
+    }>;
+}

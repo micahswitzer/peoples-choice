@@ -25,7 +25,10 @@
         </div>
       </div>
     </div>
-    <VoteResults :visible.sync="resultsVisible" :projectId="selectedProject"/>
+    <VoteResults
+      :visible.sync="resultsVisible"
+      :project="selectedProject"
+      :users="users"/>
   </div>
 </template>
 
@@ -49,7 +52,7 @@ export default class App extends Vue {
   public users: User[] = [];
   public medals: MedalList = {};
   private resultsVisible: boolean = false;
-  private selectedProject: string | null = null;
+  private selectedProject: Project | null = null;
 
   public created(): any {
     axios.get<Project[]>(UrlRoot + 'projects.php?section=1')
@@ -59,9 +62,9 @@ export default class App extends Vue {
     axios.get<MedalList>(UrlRoot + 'medals.php?section=1')
       .then((response) => this.medals = response.data);
   }
-  private showResults(projectId: string): void {
+  private showResults(project: Project): void {
     this.resultsVisible = true;
-    this.selectedProject = projectId;
+    this.selectedProject = project;
   }
 }
 </script>
