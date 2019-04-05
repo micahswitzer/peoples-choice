@@ -29,14 +29,14 @@ import { warn } from 'vue-class-component/lib/util';
 @Component
 export default class VoteResults extends Vue {
   @Prop() private visible: boolean = false;
-  @Prop() private project!: Project;
+  @Prop() private project!: Project | null;
   @Prop() private users!: {[key: string]: User};
   private teams?: TeamList;
   private voteResults?: ProjectVotes;
   private chart?: Chart;
   public mounted(): any {
     const vm = this;
-    window.UIkit.util.on(this.$refs.modal, 'hide', () => vm.visible = false);
+    window.UIkit.util.on(this.$refs.modal, 'hide', () => {vm.visible = false; vm.project = null;});
     window.UIkit.util.on(this.$refs.modal, 'show', () => vm.visible = true);
     this.chart = new Chart(this.$refs.chart as HTMLCanvasElement, {
       type: 'horizontalBar',
@@ -120,7 +120,8 @@ export default class VoteResults extends Vue {
       !value ||
       !this.chart.data.datasets ||
       !this.chart.config.options ||
-      !this.chart.config.options.title) {
+      !this.chart.config.options.title ||
+      !this.project) {
       return;
     }
     this.chart.config.options.title.text = this.project.name;

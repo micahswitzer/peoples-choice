@@ -27,13 +27,13 @@
     </div>
     <VoteResults
       :visible.sync="resultsVisible"
-      :project="selectedProject"
+      :project.sync="selectedProject"
       :users="users"/>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import Header from './components/Header.vue';
 import ProjectCard from './components/ProjectCard.vue';
 import VoteResults from './components/VoteResults.vue';
@@ -63,8 +63,15 @@ export default class App extends Vue {
       .then((response) => this.medals = response.data);
   }
   private showResults(project: Project): void {
+    console.log('showResults', this.selectedProject, this.resultsVisible);
     this.resultsVisible = true;
     this.selectedProject = project;
+  }
+  @Watch('resultsVisible')
+  private updateSelectedProject(value: boolean, oldvalue: boolean) {
+    if (value === false) {
+      this.selectedProject = null;
+    }
   }
 }
 </script>
