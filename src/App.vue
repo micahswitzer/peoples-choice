@@ -10,7 +10,8 @@
               v-bind:project="project" 
               v-bind:key="project.id"
               v-bind:medals="medals"
-              v-bind:users="users"/>
+              v-bind:users="users"
+              v-on:results-clicked="showResults"/>
           </template>
         </div>
       </div>
@@ -24,7 +25,7 @@
         </div>
       </div>
     </div>
-    <VoteResults/>
+    <VoteResults :visible.sync="resultsVisible" :projectId="selectedProject"/>
   </div>
 </template>
 
@@ -47,6 +48,8 @@ export default class App extends Vue {
   public projects: Project[] = [];
   public users: User[] = [];
   public medals: MedalList = {};
+  private resultsVisible: boolean = false;
+  private selectedProject: string | null = null;
 
   public created(): any {
     axios.get<Project[]>(UrlRoot + 'projects.php?section=1')
@@ -55,6 +58,10 @@ export default class App extends Vue {
       .then((response) => this.users = response.data);
     axios.get<MedalList>(UrlRoot + 'medals.php?section=1')
       .then((response) => this.medals = response.data);
+  }
+  private showResults(projectId: string): void {
+    this.resultsVisible = true;
+    this.selectedProject = projectId;
   }
 }
 </script>
