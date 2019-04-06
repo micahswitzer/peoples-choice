@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 // everything else here is resricted to admin access
+require_authenticated();
 if (!$user_is_admin) unauthorized();
 
 // POST

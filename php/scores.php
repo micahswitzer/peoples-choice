@@ -1,6 +1,9 @@
 <?php
 include('./_include.php');
 
+require_authorized();
+if (!$user_is_student) unauthorized();
+
 // GET
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     json(execute_sql(

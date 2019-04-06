@@ -6,14 +6,16 @@ function unauthorized() {
     header('Content-Type: text/plain');
     die('Unauthorized'."\n");
 }
-// check if the user is logged in
+
 session_start();
-// DEV ONLY, FIX FOR PRODUCTION
-if (false and !isset($_SESSION['user_id'])) unauthorized();
-else {
-    $user_id = '15';//$_SESSION['user_id'];
-    $user_is_admin = true;//$_SESSION['user_is_admin']; // this will come from the DB when a user logs in
-    $user_is_student = true;//$_SESSION['user_is_student']; // more testing
+function require_authorized() {
+    if (!isset($_SESSION['user_id'])) unauthorized();
+}
+
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    $user_is_admin = $_SESSION['user_is_admin'];
+    $user_is_student = $_SESSION['user_is_student'];
 }
 
 // define some real nice helper functions...
@@ -27,7 +29,7 @@ function error($str) {
 function json($obj) {
     header("Access-Control-Allow-Origin: http://localhost:8080");
     header("Content-Type: application/json");
-    echo json_encode($obj);
+    echo json_encode($obj)."\n";
     die(); // this is where it all ends
 }
 // executed the SQL statement provided with the provided params

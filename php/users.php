@@ -9,6 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     json($result);
 }
 
+require_authorized();
+
 // users can only update if they are trying to update themselves, or they are an admin
 $edit_self = $_GET['id'] == $user_id;
 if (!($user_is_admin or $edit_self)) unauthorized();
