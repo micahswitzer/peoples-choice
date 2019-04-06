@@ -1,7 +1,7 @@
 <template>
     <div class="pc-vote-dialog">
         <div ref="modal" id="modal-vote-dialog" class="uk-flex-top" uk-modal>
-            <div class="uk-modal-dialog">
+            <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
                 <button class="uk-modal-close-default" type="button" uk-close></button>
                 <p>This gonna be lit</p>
             </div>
@@ -31,12 +31,8 @@ export default class VoteDialog extends Vue {
   private teams?: TeamList;
   private voteResults?: ProjectVotes;
   public mounted(): any {
-    const vm = this;
-    window.UIkit.util.on(this.$refs.modal, 'hide', () => {
-      vm.visible = false;
-      vm.project = null;
-    });
-    window.UIkit.util.on(this.$refs.modal, 'show', () => vm.visible = true);
+    window.UIkit.util.on(this.$refs.modal, 'hide', () => this.$emit('update:visible', false));
+    window.UIkit.util.on(this.$refs.modal, 'show', () => this.$emit('update:visible', true));
   }
   @Watch('visible')
   private updateVisible(value: boolean, oldValue: boolean): void {

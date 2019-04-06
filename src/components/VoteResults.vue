@@ -35,8 +35,8 @@ export default class VoteResults extends Vue {
   private chart?: Chart;
   public mounted(): any {
     const vm = this;
-    window.UIkit.util.on(this.$refs.modal, 'hide', () => {vm.visible = false; vm.project = null;});
-    window.UIkit.util.on(this.$refs.modal, 'show', () => vm.visible = true);
+    window.UIkit.util.on(this.$refs.modal, 'hide', () => this.$emit('update:visible', false));
+    window.UIkit.util.on(this.$refs.modal, 'show', () => this.$emit('update:visible', true));
     this.chart = new Chart(this.$refs.chart as HTMLCanvasElement, {
       type: 'horizontalBar',
       data: {
@@ -89,9 +89,8 @@ export default class VoteResults extends Vue {
     }
   }
   @Watch('project')
-  private fetchData(value: Project, oldValue: Project): void {
-    console.log('project id changed to', value);
-    if (typeof(value) === 'undefined') {
+  private fetchData(value: Project | null, oldValue: Project): void {
+    if (typeof(value) === 'undefined' || value === null) {
       return;
     }
     let vm = this;
@@ -113,7 +112,6 @@ export default class VoteResults extends Vue {
   }
   @Watch('voteResults')
   private updateChart(value?: ProjectVotes, oldValue?: ProjectVotes): void {
-    console.log('Updating chart', value);
     if (!this.chart ||
       !this.teams ||
       !value ||

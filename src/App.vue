@@ -33,7 +33,7 @@
       :users="users"/>
     <VoteDialog
       :visible.sync="voteVisible"
-      :project.sync="selectedProject"
+      :project.sync="voteProject"
       :users="users"/>
   </div>
 </template>
