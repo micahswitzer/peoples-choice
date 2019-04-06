@@ -1,11 +1,9 @@
 <template>
-    <div class="pc-vote-results">
-        <div ref="modal" id="modal-vote-results" class="uk-modal-full" uk-modal>
+    <div class="pc-vote-dialog">
+        <div ref="modal" id="modal-vote-dialog" class="uk-flex-top" uk-modal>
             <div class="uk-modal-dialog">
-                <button class="uk-modal-close-full uk-close-large" type="button" uk-close></button>
-                <div id="vote-results-chart" class="uk-background-cover" uk-grid>
-                  <canvas ref="chart"/>
-                </div>
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                <p>This gonna be lit</p>
             </div>
         </div>
     </div>
@@ -24,7 +22,6 @@ import axios from 'axios';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Chart } from 'chart.js';
 import { Project, TeamList, UrlRoot, ProjectVotes, User } from '../models/DataModels';
-import { warn } from 'vue-class-component/lib/util';
 
 @Component
 export default class VoteDialog extends Vue {
@@ -33,5 +30,27 @@ export default class VoteDialog extends Vue {
   @Prop() private users!: {[key: string]: User};
   private teams?: TeamList;
   private voteResults?: ProjectVotes;
+  public mounted(): any {
+    const vm = this;
+    window.UIkit.util.on(this.$refs.modal, 'hide', () => {
+      vm.visible = false;
+      vm.project = null;
+    });
+    window.UIkit.util.on(this.$refs.modal, 'show', () => vm.visible = true);
+  }
+  @Watch('visible')
+  private updateVisible(value: boolean, oldValue: boolean): void {
+    if (typeof(value) === 'undefined') {
+      return;
+    }
+    if (value === oldValue) {
+      return;
+    }
+    if (value) {
+      window.UIkit.modal(this.$refs.modal).show();
+    } else {
+      window.UIkit.modal(this.$refs.modal).hide();
+    }
+  }
 }
 </script>

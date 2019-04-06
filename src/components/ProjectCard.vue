@@ -8,7 +8,11 @@
       </template>
     </div>
     <div class="uk-card-footer" v-if="projectHasMedals() || project.isOpen == '1'">
-      <button class="uk-button uk-button-primary uk-button-small" v-if="project.isOpen == '1'">Vote</button>
+      <button class="uk-button uk-button-primary uk-button-small"
+        v-if="project.isOpen == '1'"
+        v-on:click="$emit('vote-clicked', project)">
+        Vote
+      </button>
       <button class="uk-button uk-button-default uk-button-small"
         v-if="projectHasMedals() || project.isOpen == '1'"
         v-on:click="$emit('results-clicked', project)">

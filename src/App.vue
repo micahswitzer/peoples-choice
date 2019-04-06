@@ -11,7 +11,8 @@
               v-bind:key="project.id"
               v-bind:medals="medals"
               v-bind:users="users"
-              v-on:results-clicked="showResults"/>
+              v-on:results-clicked="showResults"
+              v-on:vote-clicked="showVote"/>
           </template>
         </div>
       </div>
@@ -20,13 +21,18 @@
       <div class="uk-container uk-container-expand">
         <h2 class="uk-heading-line"><span>Users</span></h2>
         <div class="uk-grid-small" uk-grid>
-          <template v-for="user in users">
+          <template v-for="(user, id) in users">
+            <UserCard :key="id" :user="user"/>
           </template>
         </div>
       </div>
     </div>
     <VoteResults
       :visible.sync="resultsVisible"
+      :project.sync="selectedProject"
+      :users="users"/>
+    <VoteDialog
+      :visible.sync="voteVisible"
       :project.sync="selectedProject"
       :users="users"/>
   </div>
@@ -37,6 +43,8 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import Header from './components/Header.vue';
 import ProjectCard from './components/ProjectCard.vue';
 import VoteResults from './components/VoteResults.vue';
+import VoteDialog from './components/VoteDialog.vue';
+import UserCard from './components/UserCard.vue';
 import { Project, User, UrlRoot, MedalList } from './models/DataModels';
 import axios from 'axios';
 
@@ -45,6 +53,8 @@ import axios from 'axios';
     Header,
     ProjectCard,
     VoteResults,
+    VoteDialog,
+    UserCard,
   },
 })
 export default class App extends Vue {
@@ -52,7 +62,9 @@ export default class App extends Vue {
   public users: User[] = [];
   public medals: MedalList = {};
   private resultsVisible: boolean = false;
+  private voteVisible: boolean = false;
   private selectedProject: Project | null = null;
+  private voteProject: Project | null = null;
 
   public created(): any {
     axios.get<Project[]>(UrlRoot + 'projects.php?section=1')
@@ -63,14 +75,23 @@ export default class App extends Vue {
       .then((response) => this.medals = response.data);
   }
   private showResults(project: Project): void {
-    console.log('showResults', this.selectedProject, this.resultsVisible);
     this.resultsVisible = true;
     this.selectedProject = project;
+  }
+  private showVote(project: Project): void {
+    this.voteVisible = true;
+    this.voteProject = project;
   }
   @Watch('resultsVisible')
   private updateSelectedProject(value: boolean, oldvalue: boolean) {
     if (value === false) {
       this.selectedProject = null;
+    }
+  }
+  @Watch('voteVisible')
+  private updateVoteProject(value: boolean, oldvalue: boolean) {
+    if (value === false) {
+      this.voteProject = null;
     }
   }
 }

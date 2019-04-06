@@ -11,6 +11,7 @@ export interface Project {
 export interface User {
     first_name: string;
     last_name: string;
+    linux_name: string;
     is_student: boolean;
     is_admin: boolean;
 }

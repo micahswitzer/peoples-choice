@@ -24,7 +24,6 @@ import axios from 'axios';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Chart } from 'chart.js';
 import { Project, TeamList, UrlRoot, ProjectVotes, User } from '../models/DataModels';
-import { warn } from 'vue-class-component/lib/util';
 
 @Component
 export default class VoteResults extends Vue {
