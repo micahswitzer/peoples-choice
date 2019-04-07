@@ -4,19 +4,19 @@ include('./_include.php');
 // GET
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!isset($_GET['section'])) error('No section specified.');
-    $result = execute_sql('SELECT id, first_name, last_name, linux_name, student as is_student, admin as is_admin FROM mzpc_user WHERE section_id = ? GROUP BY last_name ASC', [$_GET['section']])->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+    $result = execute_sql('SELECT id, first_name, last_name, linux_name, student as is_student, admin as is_admin FROM mzpc_user WHERE section_id = ? ORDER BY last_name ASC', [$_GET['section']])->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
     $result = array_map('reset', $result);
     json($result);
 }
 
 require_authorized();
 
-// users can only update if they are trying to update themselves, or they are an admin
-$edit_self = $_GET['id'] == $user_id;
-if (!($user_is_admin or $edit_self)) unauthorized();
-
 // PUT
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    // users can only update if they are trying to update themselves, or they are an admin
+    $edit_self = $_GET['id'] == $user_id;
+    if (!($user_is_admin or $edit_self)) unauthorized();
+
     parse_str(file_get_contents("php://input"), $put); // get the contents of the PUT request
     if (!isset($_GET['id'])) error('User id not specified.');
     
@@ -53,20 +53,23 @@ if (!$user_is_admin) unauthorized();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['first_name'])) error('First name not specified.');
     if (!isset($_POST['last_name'])) error('Last name not specified.');
+    if (!isset($_POST['linux_name'])) error('Linux name not specified.');
     // no password specified when creating, default is 'password'
     if (!isset($_POST['student'])) error('Student value not specified.');
     if (!isset($_POST['admin'])) error('Admin value not specified.');
     if (!isset($_POST['section_id'])) error('Section id not specified.');
     execute_sql(
-        'INSERT INTO mzpc_user (first_name, last_name, pass, student, admin, section_id) VALUES (?, ?, ?, ?, ?, ?)',
-        [$_POST['first_name'], $_POST['last_name'], password_hash('password', PASSWORD_DEFAULT), $_POST['student'], $_POST['admin'], $_POST['section_id']]);
+        'INSERT INTO mzpc_user (first_name, last_name, linux_name, pass, student, admin, section_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [$_POST['first_name'], $_POST['last_name'], $_POST['linux_name'], password_hash('password', PASSWORD_DEFAULT), $_POST['student'], $_POST['admin'], $_POST['section_id']]);
+    json(array('user_id' => latest_id()));
 }
 
 // DELETE
 else if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     if (!isset($_GET['id'])) error('User id not specified.');
-    execute_sql('DELETE FROM mzpc_user WHERE id = ?', [$_GET['id']]);
+    execute_sql('DELETE FROM mzpc_user WHERE id = ?', [$_GET['id']]) or error('Couldn\'t delete user.');
+    die();
 }
 
 // catch-all for other request types
-error('Unknown request');
+error('Unknown request.');
