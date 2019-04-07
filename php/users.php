@@ -4,7 +4,7 @@ include('./_include.php');
 // GET
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!isset($_GET['section'])) error('No section specified.');
-    $result = execute_sql('SELECT id, first_name, last_name, linux_name, student as is_student, admin as is_admin FROM mzpc_user WHERE section_id = ?', [$_GET['section']])->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+    $result = execute_sql('SELECT id, first_name, last_name, linux_name, student as is_student, admin as is_admin FROM mzpc_user WHERE section_id = ? GROUP BY last_name ASC', [$_GET['section']])->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
     $result = array_map('reset', $result);
     json($result);
 }
