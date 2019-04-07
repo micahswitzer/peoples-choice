@@ -44,13 +44,19 @@ function json($obj) {
     die(); // this is where it all ends
 }
 // executed the SQL statement provided with the provided params
-function execute_sql($sql_stmnt, $sql_params) {
-    $pdo = new PDO("mysql:host=james;dbname=cs3220_Sp19;charset=utf8mb4", "cs3220", "", [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false
-    ]);
+$pdo = new PDO("mysql:host=james;dbname=cs3220_Sp19;charset=utf8mb4", "cs3220", "", [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES => false
+]);
+function execute_sql($sql_stmnt, $sql_params) { 
+    global $pdo;
     $statement = $pdo->prepare($sql_stmnt) or error('Couldn\'t create prepared statement.');
     $statement->execute($sql_params) or error('Couldn\'t execute prepared statement.');
     return $statement;
+}
+function latest_id() {
+    global $pdo;
+    $stmt = $pdo->query("SELECT LAST_INSERT_ID()");
+    return $stmt->fetchColumn();
 }

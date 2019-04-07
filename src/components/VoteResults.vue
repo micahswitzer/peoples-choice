@@ -119,26 +119,28 @@ export default class VoteResults extends Vue {
     this.chart.data.datasets.forEach((dataset) => {
       dataset.data = [];
     });
-    const vm = this;
     for (const teamId in value) {
       if (!value.hasOwnProperty(teamId)) {
         continue;
       }
       const teamResult = value[teamId];
-
       this.chart.data.labels.push(this.getTeamName(teamId));
-      teamResult.forEach((medal) => {
-        if (!vm.chart || !vm.chart.data.datasets) {
+      console.log('teamResult', teamResult);
+      for (let i = 0; i < 3; i++) {
+        const medalValue = i + 1;
+        console.log('medalValue', medalValue);
+        let medal = teamResult.find((val) => val.points === medalValue);
+        let medalCount: number = 0;
+        if (typeof(medal) !== 'undefined') {
+          console.log('found medal with count', medal);
+          medalCount = medal.count;
+        }
+        if (!this.chart.data.datasets[i].data) {
+          console.log('dataset not found', i);
           return;
         }
-        const medalValue = parseInt(medal.points);
-        const medalIdx = medalValue - 1;
-        const medalCount = parseInt(medal.count);
-        if (!vm.chart.data.datasets[medalIdx].data) {
-          return;
-        }
-        (<number[]> vm.chart.data.datasets[medalIdx].data).push(medalValue * medalCount);
-      });
+        (<number[]> this.chart.data.datasets[i].data).push(medalValue * medalCount);
+      }
     }
     this.chart.update();
   }

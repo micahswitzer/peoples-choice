@@ -14,6 +14,7 @@
               v-on:results-clicked="showResults"
               v-on:vote-clicked="showVote"/>
           </template>
+          <button class="uk-button uk-button-primary" @click="createProject">New Project</button>
         </div>
       </div>
     </div>
@@ -150,6 +151,18 @@ export default class App extends Vue {
   private doLogout(): void {
     axios.post(UrlRoot + 'auth.php?action=logout')
       .then((response) => this.setSysUser(null));
+  }
+  @Provide()
+  private removeProject(project: Project): void {
+    this.projects.splice(this.projects.indexOf(project), 1);
+  }
+  private createProject(): void {
+    window.UIkit.modal.prompt('New project name:', '').then((name: string) => {
+      const params = new URLSearchParams();
+      params.append('name', name);
+      axios.post<{project_id: number}>(UrlRoot + 'projects.php?section=1', params)
+        .then((response) => this.projects.push({id: response.data.project_id, name: name, isOpen: 0}))
+    });
   }
 }
 </script>

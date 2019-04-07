@@ -3,9 +3,7 @@ export const UrlRoot: string = 'http://judah.cedarville.edu/~switzer/projects/5/
 export interface Project {
     id: number;
     name: string;
-    isOpen: boolean;
-    section_id: number;
-    medals?: [];
+    isOpen: number;
 }
 
 export interface User {
@@ -47,7 +45,7 @@ export interface MedalList {
 
 export interface ProjectVotes {
     [key: string]: Array<{
-        points: string;
-        count: string;
+        points: number;
+        count: number;
     }>;
 }
