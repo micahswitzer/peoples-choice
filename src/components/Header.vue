@@ -3,11 +3,10 @@
     <div class="uk-navbar-container" uk-navbar>
       <div class="uk-navbar-left">
         <div class="uk-navbar-item uk-logo">
-          People's Choice Awards (Now in&nbsp;
-          <em style="color: red;">HD</em>!)
+          People's Choice Awards
         </div>
       </div>
-      <div class="uk-navbar-center">
+      <div class="uk-navbar-center" v-if="false">
         <ul class="uk-navbar-nav">
           <li>
             <a href="#">Section 1</a>

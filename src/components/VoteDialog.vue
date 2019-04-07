@@ -29,7 +29,6 @@
 </template>
 
 <script lang="ts">
-
 import axios from 'axios';
 import { Component, Prop, Vue, Watch, Inject } from 'vue-property-decorator';
 import { Chart } from 'chart.js';
@@ -76,9 +75,6 @@ export default class VoteDialog extends Vue {
       .then((response) => this.teams = response.data);
     axios.get<{[key: string]: string | null}>(UrlRoot + 'scores.php?project=' + value.id)
       .then((response) => this.medals = response.data);
-      //.then(() =>
-      //  axios.get<ProjectVotes>(UrlRoot + 'vote-results.php?project=' + value.id)
-      //  .then((response) => {vm.voteResults = response.data; vm.updateChart(response.data, undefined); }));
   }
   private getTeamName(teamId: string): string {
     if (!this.teams || !this.users) {

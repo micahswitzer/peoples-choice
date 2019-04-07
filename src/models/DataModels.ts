@@ -1,4 +1,4 @@
-export const UrlRoot: string = 'http://judah.cedarville.edu/~switzer/projects/5/';
+export const UrlRoot: string = process.env.VUE_APP_ROOT_URL;
 
 export interface Project {
     id: number;
@@ -48,4 +48,10 @@ export interface ProjectVotes {
         points: number;
         count: number;
     }>;
+}
+
+export interface WriteIn {
+    id: string;
+    team_id: string;
+    message: string;
 }

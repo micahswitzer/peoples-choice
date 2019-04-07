@@ -26,6 +26,12 @@
               v-on:click="$emit('vote-clicked', project)"
             >Vote</button>
           </div>
+          <div v-if="project.isOpen == '1' && sysUser.is_student">
+            <button
+              class="uk-button uk-button-default uk-button-small"
+              v-on:click="$emit('write-ins-clicked', project)"
+            >Write-ins</button>
+          </div>
           <div v-if="projectHasMedals() || project.isOpen == '1'">
             <button
               class="uk-button uk-button-default uk-button-small"
