@@ -25,7 +25,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { User } from '../models/DataModels';
 
 @Component
-export default class ProjectCard extends Vue {
+export default class UserCard extends Vue {
   @Prop() private user!: User;
 }
 </script>

@@ -9,7 +9,7 @@
     </div>
     <div class="uk-card-footer" v-if="projectHasMedals() || project.isOpen == '1'">
       <button class="uk-button uk-button-primary uk-button-small"
-        v-if="project.isOpen == '1'"
+        v-if="project.isOpen == '1' && sysUser.is_student"
         v-on:click="$emit('vote-clicked', project)">
         Vote
       </button>
@@ -24,8 +24,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Project, TeamList, UrlRoot, MedalList, User } from '../models/DataModels';
+import { Component, Prop, Vue, Inject } from 'vue-property-decorator';
+import { Project, TeamList, UrlRoot, MedalList, User, SystemUser } from '../models/DataModels';
 import MedalItem from '../components/MedalItem.vue';
 import axios from 'axios';
 
@@ -39,6 +39,7 @@ export default class ProjectCard extends Vue {
   @Prop() private project!: Project;
   @Prop() private medals!: MedalList;
   @Prop() private users!: {[key: string]: User};
+  @Inject() private readonly sysUser!: SystemUser;
   public created(): any {
     axios.get<TeamList>(UrlRoot + 'teams.php?project=' + this.project.id)
       .then((response) => this.teams = response.data);

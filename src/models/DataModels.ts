@@ -16,6 +16,17 @@ export interface User {
     is_admin: boolean;
 }
 
+export interface SystemUser {
+    id: string | null;
+    full_name: string;
+    is_student: boolean;
+    is_admin: boolean;
+}
+
+export interface UserList {
+    [key: string]: User;
+}
+
 export interface Medal {
     value: number;
     name: string;

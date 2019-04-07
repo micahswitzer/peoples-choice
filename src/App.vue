@@ -39,13 +39,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+declare global {
+  interface Window {
+    UIkit: {
+      util: any;
+      modal: any;
+      notification: (message: string, data?: any) => void;
+    };
+  }
+}
+
+import { Component, Vue, Watch, Provide } from 'vue-property-decorator';
 import Header from './components/Header.vue';
 import ProjectCard from './components/ProjectCard.vue';
 import VoteResults from './components/VoteResults.vue';
 import VoteDialog from './components/VoteDialog.vue';
 import UserCard from './components/UserCard.vue';
-import { Project, User, UrlRoot, MedalList } from './models/DataModels';
+import { Project, User, UrlRoot, MedalList, UserList, SystemUser } from './models/DataModels';
 import axios from 'axios';
 
 @Component({
@@ -59,17 +69,28 @@ import axios from 'axios';
 })
 export default class App extends Vue {
   public projects: Project[] = [];
-  public users: User[] = [];
+  public users: UserList = {};
   public medals: MedalList = {};
   private resultsVisible: boolean = false;
   private voteVisible: boolean = false;
   private selectedProject: Project | null = null;
   private voteProject: Project | null = null;
+  @Provide()
+  private sysUser: SystemUser = {
+    id: null, full_name: '',
+    is_student: false, is_admin: false
+  };
 
   public created(): any {
+    axios.interceptors.response.use((response) => response, (error) => {
+      if (error.response.status == 401) // if the error code is unauthorized
+        this.updateUserInfo(); // refresh the user's credentials
+      return Promise.reject(error);
+    });
+    axios.defaults.withCredentials = true;
     axios.get<Project[]>(UrlRoot + 'projects.php?section=1')
       .then((response) => this.projects = response.data);
-    axios.get<User[]>(UrlRoot + 'users.php?section=1')
+    axios.get<UserList>(UrlRoot + 'users.php?section=1')
       .then((response) => this.users = response.data);
     axios.get<MedalList>(UrlRoot + 'medals.php?section=1')
       .then((response) => this.medals = response.data);
@@ -93,6 +114,42 @@ export default class App extends Vue {
     if (value === false) {
       this.voteProject = null;
     }
+  }
+  private setSysUser(userId: string | null): void {
+    if (userId === null) {
+      this.sysUser.id = null;
+      this.sysUser.full_name = 'Anonymous';
+      this.sysUser.is_student = false;
+      this.sysUser.is_admin = false;
+    }
+    else {
+      this.sysUser.id = userId;
+      this.sysUser.full_name =
+        `${this.users[userId].first_name} ${this.users[userId].last_name}`;
+      this.sysUser.is_student = this.users[userId].is_student;
+      this.sysUser.is_admin = this.users[userId].is_admin;
+    }
+  }
+  @Watch('users')
+  private updateUserInfo(): void {
+    axios.get<{user_id: string | null}>(UrlRoot + 'auth.php')
+      .then((response) => this.setSysUser(response.data.user_id));
+  }
+  @Provide()
+  private doLogin(): void {
+    const params = new URLSearchParams();
+    params.append('username', prompt('username') || '');
+    params.append('password', prompt('password') || '');
+    axios.post<{user_id: string | null}>(UrlRoot + 'auth.php?action=login', params)
+      .then((response) => {
+        this.setSysUser(response.data.user_id);
+        window.UIkit.notification(`Welcome, ${this.sysUser.full_name}!`, {status: 'success'});
+      });
+  }
+  @Provide()
+  private doLogout(): void {
+    axios.post(UrlRoot + 'auth.php?action=logout')
+      .then((response) => this.setSysUser(null));
   }
 }
 </script>

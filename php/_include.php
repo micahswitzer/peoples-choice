@@ -1,4 +1,16 @@
 <?php
+header("Access-Control-Allow-Origin: http://localhost:8080");
+header('Access-Control-Allow-Credentials: true');
+
+// respond to preflights
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    // return only the headers and not the content
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
+        header('Access-Control-Allow-Headers: X-Requested-With, Content-Type');
+        header('Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE, PUT');
+    }
+    exit;
+}
 
 function unauthorized() {
     // get rejected!
@@ -27,7 +39,6 @@ function error($str) {
 }
 // returns the obejct as JSON with the proper content-type
 function json($obj) {
-    header("Access-Control-Allow-Origin: http://localhost:8080");
     header("Content-Type: application/json");
     echo json_encode($obj)."\n";
     die(); // this is where it all ends

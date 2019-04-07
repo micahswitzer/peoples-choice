@@ -12,14 +12,7 @@
 </template>
 
 <script lang="ts">
-declare global {
-  interface Window {
-    UIkit: {
-      util: any;
-      modal: any;
-    };
-  }
-}
+
 import axios from 'axios';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Chart } from 'chart.js';
