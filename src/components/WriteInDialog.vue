@@ -92,7 +92,7 @@ export default class WriteInDialog extends Vue {
     if (value === oldValue) {
       return;
     }
-    axios.get<WriteIn[]>(UrlRoot + 'write-in.php?project=' + value.id)
+    axios.get<WriteIn[]>(UrlRoot + 'write-in.php?project=' + value.id + '&user=' + this.sysUser.id)
       .then((response) => this.writeIns = response.data);
     axios.get<TeamList>(UrlRoot + 'teams.php?project=' + value.id)
       .then((response) => this.teams = response.data);

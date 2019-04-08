@@ -4,11 +4,22 @@ include('./_include.php');
 // GET
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!isset($_GET['project'])) error('Project not specified.');
-    json(execute_sql(
-        'SELECT w.id, w.team_id, w.message FROM mzpc_write_in w
-        JOIN mzpc_team t ON w.team_id = t.id
-        WHERE t.project_id = ?',
-        [$_GET['project']])->fetchAll());
+    if (!isset($_GET['user'])) {
+        json(execute_sql(
+            'SELECT w.id, w.team_id, w.message FROM mzpc_write_in w
+            JOIN mzpc_team t ON w.team_id = t.id
+            WHERE t.project_id = ?',
+            [$_GET['project']])->fetchAll());
+    }
+    else {
+        // the sneaky person tried to peep on other's write-ins!
+        if ($_GET['user'] !== $user_id) unauthorized();
+        json(execute_sql(
+            'SELECT w.id, w.team_id, w.message FROM mzpc_write_in w
+            JOIN mzpc_team t ON w.team_id = t.id
+            WHERE t.project_id = ? AND w.user_id = ?',
+            [$_GET['project'], $user_id])->fetchAll());
+    }
 }
 
 require_authorized();

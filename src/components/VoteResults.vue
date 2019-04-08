@@ -1,10 +1,27 @@
 <template>
     <div class="pc-vote-results">
-        <div ref="modal" id="modal-vote-results" class="uk-modal-full" uk-modal>
+        <div ref="modal" class="uk-modal-full" uk-modal>
             <div class="uk-modal-dialog">
                 <button class="uk-modal-close-full uk-close-large" type="button" uk-close></button>
-                <div id="vote-results-chart" class="uk-background-cover" uk-grid>
-                  <canvas ref="chart"/>
+                <div uk-height-viewport uk-grid>
+                  <div class="uk-width-3-4">
+                    <canvas ref="chart"/>
+                  </div>
+                  <div class="uk-width-1-4">
+                    <h2>Write-ins</h2>
+                    <ul class="uk-list uk-list-striped uk-margin-large-right">
+                      <li v-for="writeIn in writeIns" :key="writeIn.id">
+                        <div uk-grid>
+                          <div class="uk-width-auto uk-text-middle">
+                            <span v-html="getTeamNameNewline(writeIn.team_id)"></span>
+                          </div>
+                          <div class="uk-width-expand">
+                            <span><em>{{ writeIn.message }}</em></span>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
             </div>
         </div>
@@ -16,7 +33,7 @@
 import axios from 'axios';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Chart } from 'chart.js';
-import { Project, TeamList, UrlRoot, ProjectVotes, User } from '../models/DataModels';
+import { Project, TeamList, UrlRoot, ProjectVotes, User, WriteIn } from '../models/DataModels';
 
 @Component
 export default class VoteResults extends Vue {
@@ -26,6 +43,7 @@ export default class VoteResults extends Vue {
   private teams?: TeamList;
   private voteResults?: ProjectVotes;
   private chart?: Chart;
+  private writeIns: WriteIn[] = [];
   public mounted(): any {
     const vm = this;
     window.UIkit.util.on(this.$refs.modal, 'hide', () => this.$emit('update:visible', false));
@@ -49,6 +67,7 @@ export default class VoteResults extends Vue {
         }],
       },
       options: {
+        maintainAspectRatio: false,
         scales: {
           xAxes: [{
             stacked: true,
@@ -92,6 +111,8 @@ export default class VoteResults extends Vue {
       .then(() =>
         axios.get<ProjectVotes>(UrlRoot + 'vote-results.php?project=' + value.id)
         .then((response) => {vm.voteResults = response.data; vm.updateChart(response.data, undefined); }));
+    axios.get<WriteIn[]>(UrlRoot + 'write-in.php?project=' + value.id)
+      .then((response) => this.writeIns = response.data);
   }
   private getTeamName(teamId: string): string[] {
     if (!this.teams) {
@@ -99,7 +120,17 @@ export default class VoteResults extends Vue {
     }
     let name: string[] = [];
     this.teams[teamId].forEach((userId: string) => {
-      name.push(`${this.users[userId].first_name} ${this.users[userId].last_name}\n`);
+      name.push(`${this.users[userId].first_name} ${this.users[userId].last_name}`);
+    });
+    return name;
+  }
+  private getTeamNameNewline(teamId: string): string {
+    if (!this.teams) {
+      return '';
+    }
+    let name: string = '';
+    this.teams[teamId].forEach((userId: string) => {
+      name += (`${this.users[userId].first_name} ${this.users[userId].last_name}<br>`);
     });
     return name;
   }
