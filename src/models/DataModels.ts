@@ -45,8 +45,8 @@ export interface MedalList {
 
 export interface ProjectVotes {
     [key: string]: Array<{
-        points: number;
-        count: number;
+        points: string;
+        count: string;
     }>;
 }
 

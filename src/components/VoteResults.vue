@@ -167,10 +167,10 @@ export default class VoteResults extends Vue {
       this.chart.data.labels.push(this.getTeamName(teamId));
       for (let i = 0; i < 3; i++) {
         const medalValue = i + 1;
-        const medal = teamResult.find((val) => val.points === medalValue);
+        const medal = teamResult.find((val) => val.points === medalValue.toString());
         let medalCount: number = 0;
         if (typeof(medal) !== 'undefined') {
-          medalCount = medal.count;
+          medalCount = parseInt(medal.count, 10);
         }
         if (!this.chart.data.datasets[i].data) {
           return;
