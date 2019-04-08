@@ -50,6 +50,12 @@
               v-on:click="setOpen(false)"
             >Close</button>
           </div>
+          <div v-if="!projectHasMedals() && project.isOpen == 0 && sysUser.is_admin">
+            <button
+              class="uk-button uk-button-default uk-button-small"
+              v-on:click="$emit('teams-clicked', project)"
+            >Teams</button>
+          </div>
           <div v-if="sysUser.is_admin">
             <button
               class="uk-button uk-button-danger uk-button-small"

@@ -16,6 +16,7 @@
               v-on:results-clicked="showResults"
               v-on:vote-clicked="showVote"
               v-on:write-ins-clicked="showWriteins"
+              v-on:teams-clicked="showTeams"
             />
           </template>
           <div v-if="sysUser.is_admin == 1">
@@ -73,9 +74,10 @@
         </div>
       </div>
     </div>
-    <VoteResults :visible.sync="resultsVisible" :project.sync="selectedProject" :users="users"/>
-    <VoteDialog :visible.sync="voteVisible" :project.sync="voteProject" :users="users"/>
-    <WriteInDialog :visible.sync="writeinsVisible" :project.sync="writeinsProject" :users="users"/>
+    <TeamsDialog :visible.sync="teamsVisible" :project="teamsProject" :users="users" />
+    <VoteResults :visible.sync="resultsVisible" :project.sync="selectedProject" :users="users" />
+    <VoteDialog :visible.sync="voteVisible" :project.sync="voteProject" :users="users" />
+    <WriteInDialog :visible.sync="writeinsVisible" :project.sync="writeinsProject" :users="users" />
   </div>
 </template>
 
@@ -97,6 +99,7 @@ import VoteResults from './components/VoteResults.vue';
 import VoteDialog from './components/VoteDialog.vue';
 import UserCard from './components/UserCard.vue';
 import WriteInDialog from './components/WriteInDialog.vue';
+import TeamsDialog from './components/TeamsDialog.vue';
 import {
   Project,
   User,
@@ -116,6 +119,7 @@ import axios from 'axios';
     VoteDialog,
     UserCard,
     WriteInDialog,
+    TeamsDialog,
   },
 })
 export default class App extends Vue {
@@ -125,9 +129,11 @@ export default class App extends Vue {
   private resultsVisible: boolean = false;
   private voteVisible: boolean = false;
   private writeinsVisible: boolean = false;
+  private teamsVisible: boolean = false;
   private selectedProject: Project | null = null;
   private voteProject: Project | null = null;
   private writeinsProject: Project | null = null;
+  private teamsProject: Project | null = null;
   @Provide()
   private sysUser: SystemUser = {
     id: null,
@@ -284,6 +290,16 @@ export default class App extends Vue {
   private showWriteins(project: Project): void {
     this.writeinsProject = project;
     this.writeinsVisible = true;
+  }
+  @Watch('teamsVisible')
+  private updateTeamsVisible(value: boolean, oldvalue: boolean): void {
+    if (value === false) {
+      this.teamsProject = null;
+    }
+  }
+  private showTeams(project: Project): void {
+    this.teamsProject = project;
+    this.teamsVisible = true;
   }
 }
 </script>
