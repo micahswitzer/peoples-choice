@@ -41,10 +41,10 @@ export default class VoteDialog extends Vue {
   @Prop() private project!: Project | null;
   @Prop() private users!: UserList;
   @Inject() private readonly sysUser!: SystemUser;
-  private readonly medalTypes: {[key: string]: string} = {'3': 'Gold', '2': 'Silver', '1': 'Bronze'};
+  private readonly medalTypes: {[key: string]: string} = {3: 'Gold', 2: 'Silver', 1: 'Bronze'};
   private teams?: TeamList = {};
   private voteResults?: ProjectVotes;
-  private medals: {[key: string]: string | null} = {'3': null, '2': null, '1': null};
+  private medals: {[key: string]: string | null} = {3: null, 2: null, 1: null};
   public mounted(): any {
     window.UIkit.util.on(this.$refs.modal, 'hide', () => this.$emit('update:visible', false));
     window.UIkit.util.on(this.$refs.modal, 'show', () => this.$emit('update:visible', true));
@@ -82,29 +82,40 @@ export default class VoteDialog extends Vue {
     }
     let name: string = '';
     this.teams[teamId].forEach((userId: string) => {
-      if (!this.users.hasOwnProperty(userId)) return;
+      if (!this.users.hasOwnProperty(userId)) {
+        return;
+      }
       name += (`${this.users[userId].first_name} ${this.users[userId].last_name}\n`);
     });
     return name;
   }
-  private teamsForMedal(teams: TeamList, medals: {[key: string]: string}, medalId: string) {
+  private teamsForMedal(teams: TeamList, medals: {[key: string]: number}, medalId: string) {
     const newTeams: TeamList = {};
-    for (let teamId in teams) {
-      if (!teams.hasOwnProperty(teamId)) continue;
+    for (const teamId in teams) {
+      if (!teams.hasOwnProperty(teamId)) {
+        continue;
+      }
       let cont = false;
-      for (let medalIdIter in medals) {
-        if (!medals.hasOwnProperty(medalIdIter)) continue;
-        if (medalId === medalIdIter) continue;
-        if (medals[medalIdIter] == teamId) {
+      for (const medalIdIter in medals) {
+        if (!medals.hasOwnProperty(medalIdIter)) {
+          continue;
+        }
+        if (medalId === medalIdIter) {
+          continue;
+        }
+        if (medals[medalIdIter].toString() === teamId) {
           cont = true;
           break;
         }
       }
-      if (cont) continue;
+      if (cont) {
+        continue;
+      }
       if (this.sysUser &&
         this.sysUser.id !== null &&
-        teams[teamId].indexOf(this.sysUser.id) != -1)
+        teams[teamId].indexOf(this.sysUser.id) !== -1) {
         continue;
+      }
       newTeams[teamId] = teams[teamId];
     }
     return newTeams;

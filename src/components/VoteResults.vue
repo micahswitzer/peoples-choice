@@ -8,7 +8,7 @@
                     <canvas ref="chart"/>
                   </div>
                   <div class="uk-width-1-4">
-                    <h2>Write-ins</h2>
+                    <h3>Write-ins</h3>
                     <ul class="uk-list uk-list-striped uk-margin-large-right">
                       <li v-for="writeIn in writeIns" :key="writeIn.id">
                         <div uk-grid>
@@ -44,6 +44,7 @@ export default class VoteResults extends Vue {
   private voteResults?: ProjectVotes;
   private chart?: Chart;
   private writeIns: WriteIn[] = [];
+  private intervalToken?: number;
   public mounted(): any {
     const vm = this;
     window.UIkit.util.on(this.$refs.modal, 'hide', () => this.$emit('update:visible', false));
@@ -96,21 +97,29 @@ export default class VoteResults extends Vue {
     }
     if (value) {
       window.UIkit.modal(this.$refs.modal).show();
+      if (this.project && this.project.isOpen === 1) {
+        this.intervalToken = window.setInterval(() => {
+          this.fetchData(this.project, null);
+        }, 5000);
+      }
     } else {
       window.UIkit.modal(this.$refs.modal).hide();
+      if (this.intervalToken) {
+        window.clearInterval(this.intervalToken);
+        this.intervalToken = undefined;
+      }
     }
   }
   @Watch('project')
-  private fetchData(value: Project | null, oldValue: Project): void {
+  private fetchData(value: Project | null, oldValue: Project | null): void {
     if (typeof(value) === 'undefined' || value === null) {
       return;
     }
-    let vm = this;
     axios.get<TeamList>(UrlRoot + 'teams.php?project=' + value.id)
-      .then((response) => vm.teams = response.data)
+      .then((response) => this.teams = response.data)
       .then(() =>
         axios.get<ProjectVotes>(UrlRoot + 'vote-results.php?project=' + value.id)
-        .then((response) => {vm.voteResults = response.data; vm.updateChart(response.data, undefined); }));
+        .then((response) => {this.voteResults = response.data; this.updateChart(response.data, undefined); }));
     axios.get<WriteIn[]>(UrlRoot + 'write-in.php?project=' + value.id)
       .then((response) => this.writeIns = response.data);
   }
@@ -118,7 +127,7 @@ export default class VoteResults extends Vue {
     if (!this.teams) {
       return [];
     }
-    let name: string[] = [];
+    const name: string[] = [];
     this.teams[teamId].forEach((userId: string) => {
       name.push(`${this.users[userId].first_name} ${this.users[userId].last_name}`);
     });
@@ -156,21 +165,17 @@ export default class VoteResults extends Vue {
       }
       const teamResult = value[teamId];
       this.chart.data.labels.push(this.getTeamName(teamId));
-      console.log('teamResult', teamResult);
       for (let i = 0; i < 3; i++) {
         const medalValue = i + 1;
-        console.log('medalValue', medalValue);
-        let medal = teamResult.find((val) => val.points === medalValue);
+        const medal = teamResult.find((val) => val.points === medalValue);
         let medalCount: number = 0;
         if (typeof(medal) !== 'undefined') {
-          console.log('found medal with count', medal);
           medalCount = medal.count;
         }
         if (!this.chart.data.datasets[i].data) {
-          console.log('dataset not found', i);
           return;
         }
-        (<number[]> this.chart.data.datasets[i].data).push(medalValue * medalCount);
+        (this.chart.data.datasets[i].data as number[]).push(medalValue * medalCount);
       }
     }
     this.chart.update();

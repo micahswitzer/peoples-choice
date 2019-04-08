@@ -63,23 +63,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Inject } from "vue-property-decorator";
+import { Component, Prop, Vue, Inject } from 'vue-property-decorator';
 import {
   Project,
   TeamList,
   UrlRoot,
   MedalList,
   User,
-  SystemUser
-} from "../models/DataModels";
-import MedalItem from "../components/MedalItem.vue";
-import axios from "axios";
+  SystemUser,
+} from '../models/DataModels';
+import MedalItem from '../components/MedalItem.vue';
+import axios from 'axios';
 import App from '@/App.vue';
 
 @Component({
   components: {
-    MedalItem
-  }
+    MedalItem,
+  },
 })
 export default class ProjectCard extends Vue {
   public teams: TeamList | null = null;
@@ -87,16 +87,17 @@ export default class ProjectCard extends Vue {
   @Prop() private medals!: MedalList;
   @Prop() private users!: { [key: string]: User };
   @Inject() private readonly sysUser!: SystemUser;
+  @Inject() private readonly removeProject!: (project: Project) => void;
   public created(): any {
     axios
-      .get<TeamList>(UrlRoot + "teams.php?project=" + this.project.id)
-      .then(response => (this.teams = response.data));
+      .get<TeamList>(UrlRoot + 'teams.php?project=' + this.project.id)
+      .then((response) => (this.teams = response.data));
   }
   private getTeamName(teamId: string): string {
     if (!this.teams) {
-      return "";
+      return '';
     }
-    let name = "";
+    let name = '';
     this.teams[teamId].forEach((userId: string) => {
       name += `${this.users[userId].first_name} ${
         this.users[userId].last_name
@@ -121,10 +122,11 @@ export default class ProjectCard extends Vue {
       });
   }
   private deleteProject(): void {
-    window.UIkit.modal.confirm(`Are you sure you want to delete project '${this.project.name}'?<br>This action cannot be undone.`)
-      .then(() => axios.delete(UrlRoot + 'projects.php?project=' + this.project.id).then((response) => this.removeProject(this.project)));
+    window.UIkit.modal.confirm(`Are you sure you want to delete project '${this.project.name}'?` +
+      '<br>This action cannot be undone.')
+      .then(() => axios.delete(UrlRoot + 'projects.php?project=' + this.project.id)
+        .then((response) => this.removeProject(this.project)));
   }
-  @Inject() private readonly removeProject!: (project: Project) => void;
 }
 </script>
 

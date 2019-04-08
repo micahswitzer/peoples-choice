@@ -104,7 +104,7 @@ import {
   MedalList,
   UserList,
   SystemUser,
-  ProjectVotes
+  ProjectVotes,
 } from './models/DataModels';
 import axios from 'axios';
 
@@ -116,7 +116,7 @@ import axios from 'axios';
     VoteDialog,
     UserCard,
     WriteInDialog,
-  }
+  },
 })
 export default class App extends Vue {
   public projects: Project[] = [];
@@ -133,36 +133,36 @@ export default class App extends Vue {
     id: null,
     full_name: '',
     is_student: false,
-    is_admin: false
+    is_admin: false,
   };
   private newUser: User = {
     first_name: '',
     last_name: '',
     linux_name: '',
     is_student: true,
-    is_admin: false
-  }
+    is_admin: false,
+  };
 
   public created(): any {
     axios.interceptors.response.use(
-      response => response,
-      error => {
-        if (error.response.status == 401)
+      (response) => response,
+      (error) => {
+        if (error.response.status === 401) {
           // if the error code is unauthorized
           this.updateUserInfo(); // refresh the user's credentials
+        }
         return Promise.reject(error);
-      }
-    );
+      });
     axios.defaults.withCredentials = true;
     axios
       .get<Project[]>(UrlRoot + 'projects.php?section=1')
-      .then(response => (this.projects = response.data));
+      .then((response) => (this.projects = response.data));
     axios
       .get<UserList>(UrlRoot + 'users.php?section=1')
-      .then(response => (this.users = response.data));
+      .then((response) => (this.users = response.data));
     axios
       .get<MedalList>(UrlRoot + 'medals.php?section=1')
-      .then(response => (this.medals = response.data));
+      .then((response) => (this.medals = response.data));
   }
   private showResults(project: Project): void {
     this.resultsVisible = true;
@@ -203,7 +203,7 @@ export default class App extends Vue {
   private updateUserInfo(): void {
     axios
       .get<{ user_id: string | null }>(UrlRoot + 'auth.php')
-      .then(response => this.setSysUser(response.data.user_id));
+      .then((response) => this.setSysUser(response.data.user_id));
   }
   @Provide()
   private doLogin(): void {
@@ -213,12 +213,11 @@ export default class App extends Vue {
     axios
       .post<{ user_id: string | null }>(
         UrlRoot + 'auth.php?action=login',
-        params
-      )
-      .then(response => {
+        params)
+      .then((response) => {
         this.setSysUser(response.data.user_id);
         window.UIkit.notification(`Welcome, ${this.sysUser.full_name}!`, {
-          status: 'success'
+          status: 'success',
         });
       });
   }
@@ -226,7 +225,7 @@ export default class App extends Vue {
   private doLogout(): void {
     axios
       .post(UrlRoot + 'auth.php?action=logout')
-      .then(response => this.setSysUser(null));
+      .then((response) => this.setSysUser(null));
   }
   @Provide()
   private removeProject(project: Project): void {
@@ -244,15 +243,13 @@ export default class App extends Vue {
       axios
         .post<{ project_id: number }>(
           UrlRoot + 'projects.php?section=1',
-          params
-        )
-        .then(response =>
+          params)
+        .then((response) =>
           this.projects.push({
             id: response.data.project_id,
-            name: name,
-            isOpen: 0
-          })
-        );
+            name,
+            isOpen: 0,
+          }));
     });
   }
   private createUser(): void {

@@ -103,7 +103,9 @@ export default class WriteInDialog extends Vue {
     }
     let name: string = '';
     this.teams[teamId].forEach((userId: string) => {
-      if (!this.users.hasOwnProperty(userId)) return;
+      if (!this.users.hasOwnProperty(userId)) {
+        return;
+      }
       name += (`${this.users[userId].first_name} ${this.users[userId].last_name}${separator}`);
     });
     return name;
