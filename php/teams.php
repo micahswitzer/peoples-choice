@@ -13,28 +13,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 // everything else here is resricted to admin access
-require_authenticated();
+require_authorized();
 if (!$user_is_admin) unauthorized();
 
 // POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['name'])) error('Name not specified.');
-    if (!isset($_POST['project_id'])) error('Project id not specified.');
-    execute_sql('INSERT INTO mzpc_team (name, project_id) VALUES (?, ?)', [$_POST['name'], $_POST['project_id']]);
-}
-
-// PUT
-else if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-    parse_str(file_get_contents("php://input"), $put); // get the contents of the PUT request
-    if (!isset($_GET['id'])) error('Team id not specified.');
-    if (!isset($put['name'])) error('Name not specified.');
-    execute_sql('UPDATE mzpc_team SET name = ? WHERE id = ?', [$put['name'], $_GET['id']]);
-}
-
-// DELETE
-else if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-    if (!isset($_GET['id'])) error('Team id not specified.');
-    execute_sql('DELETE FROM mzpc_team WHERE id = ?', [$_GET['id']]);
+    if (!isset($_GET['project'])) error('No project specified.');
+    execute_sql('DELETE FROM mzpc_team WHERE project_id = ?', [$_GET['project']]) or error('Couldn\'t clear teams');
+    $teams = json_decode(file_get_contents("php://input"));
+    foreach ($teams as $members) {
+        if (sizeof($members) == 0) continue;
+        execute_sql('INSERT INTO mzpc_team (project_id) VALUES (?)', [$_GET['project']]);
+        $team_id = latest_id();
+        foreach ($members as $member_id) {
+            execute_sql('INSERT INTO mzpc_member (team_id, user_id) VALUES (?, ?)', [$team_id, $member_id]);
+        }
+    }
+    die();
 }
 
 // catch-all for other request types

@@ -108,7 +108,11 @@ export default class TeamsDialog extends Vue {
     this.teams = newTeams;
   }
   private saveTeams(): void {
-    // do something
+    if (!this.project) {
+      return;
+    }
+    axios.post(UrlRoot + 'teams.php?project=' + this.project.id, this.teams)
+      .then((response) => this.$emit('update:visible', false));
   }
   private computeUnassigned(): void {
     const users: string[] = [];
@@ -149,9 +153,5 @@ export default class TeamsDialog extends Vue {
     }
     this.$set(this.teams, (lastIdx + 1).toString(), [] as string[]);
   }
-  // private deleteTeam(id: string, index: number): void {
-  //   axios.delete(UrlRoot + 'teams?id=' + id)
-  //     .then((response) => {});
-  // }
 }
 </script>
