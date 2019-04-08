@@ -244,6 +244,9 @@ export default class App extends Vue {
   }
   private createProject(): void {
     window.UIkit.modal.prompt('New project name:', '').then((name: string) => {
+      if (!name || name == '') {
+        return;
+      }
       const params = new URLSearchParams();
       params.append('name', name);
       axios
