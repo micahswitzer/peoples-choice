@@ -12,7 +12,8 @@
     "chart.js": "^2.8.0",
     "vue": "^2.6.6",
     "vue-class-component": "^6.0.0",
-    "vue-property-decorator": "^7.0.0"
+    "vue-property-decorator": "^7.0.0",
+    "vuedraggable": "^2.20.0"
   },
   "devDependencies": {
     "@types/chart.js": "^2.7.50",
